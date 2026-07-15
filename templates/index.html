@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Password Analyzer Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="main-card">
+
+    <h1>🔐 Password Security AI</h1>
+
+    <div class="input-box">
+        <input type="password" id="password" name="password" placeholder="Enter password...">
+        <button onclick="togglePassword()">👁</button>
+    </div>
+
+    <div class="buttons">
+        <button onclick="submitPassword()">Analyze</button>
+        <button onclick="generatePassword()">Generate</button>
+        <button onclick="resetCurrent()">Reset</button>
+    </div>
+
+    <!-- LIVE METER -->
+    <div class="meter">
+        <div id="strengthBar"></div>
+    </div>
+
+    <p id="suggestions"></p>
+
+    <!-- RESULT -->
+    <div id="resultBox"></div>
+
+    <!-- HISTORY -->
+    <h2>📜 History</h2>
+    <div id="historyBox">
+        {% for item in history %}
+        <div class="history-card">
+            {{ item.password }} → {{ item.result }} ({{ item.score }})
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+
+// LIVE STRENGTH CHECK
+document.getElementById("password").addEventListener("input", function() {
+    let val = this.value;
+    let score = 0;
+
+    if (val.length >= 8) score += 25;
+    if (/[A-Z]/.test(val)) score += 25;
+    if (/[0-9]/.test(val)) score += 25;
+    if (/[^A-Za-z0-9]/.test(val)) score += 25;
+
+    let bar = document.getElementById("strengthBar");
+    bar.style.width = score + "%";
+
+    if (score < 40) bar.style.background = "red";
+    else if (score < 75) bar.style.background = "yellow";
+    else bar.style.background = "green";
+
+    // Suggestions
+    let text = "";
+    if (val.length < 8) text += "Use at least 8 characters. ";
+    if (!/[A-Z]/.test(val)) text += "Add uppercase. ";
+    if (!/[0-9]/.test(val)) text += "Add numbers. ";
+    if (!/[^A-Za-z0-9]/.test(val)) text += "Add symbols.";
+
+    document.getElementById("suggestions").innerText = text;
+});
+
+// SHOW/HIDE PASSWORD
+function togglePassword() {
+    let input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+
+// GENERATE PASSWORD
+function generatePassword() {
+    let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+    let pass = "";
+    for (let i = 0; i < 12; i++) {
+        pass += chars[Math.floor(Math.random() * chars.length)];
+    }
+    document.getElementById("password").value = pass;
+}
+
+// RESET
+function resetCurrent() {
+    document.getElementById("password").value = "";
+    document.getElementById("strengthBar").style.width = "0%";
+    document.getElementById("resultBox").innerHTML = "";
+    document.getElementById("suggestions").innerText = "";
+}
+
+// SUBMIT TO FLASK
+function submitPassword() {
+    let password = document.getElementById("password").value;
+
+    fetch("/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "password=" + password
+    })
+    .then(res => res.text())
+    .then(html => {
+        document.open();
+        document.write(html);
+        document.close();
+    });
+}
+
+</script>
+
+</body>
+</html>
