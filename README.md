@@ -71,7 +71,14 @@ http://127.0.0.1:5000
 
 ## 📸 Screenshots
 
-<img width="853" height="633" alt="image" src="https://github.com/user-attachments/assets/9b615dd4-078e-4c3f-bbad-629a3e6f8575" />
+<img width="600" height="500" alt="image" src="https://github.com/user-attachments/assets/9b615dd4-078e-4c3f-bbad-629a3e6f8575" />
+Analyzing the strenght of Password
+<img width="600" height="500" alt="image" src="https://github.com/user-attachments/assets/ae17fedd-ef15-4e45-a467-e5d12ecfc6b2" />
+Generate password
+<img width="600" height="500" alt="image" src="https://github.com/user-attachments/assets/8d22fc3c-3bcf-48a0-8bcc-fb2c4670cef4" />
+
+
+
 
 
 
